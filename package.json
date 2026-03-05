@@ -1,0 +1,15 @@
+{
+  "name": "software-enginnering-ki-222",
+  "version": "1.0.0",
+  "description": "Static website for lab 2",
+  "devDependencies": {
+    "htmlhint": "^1.1.4",
+    "stylelint": "^16.2.1",
+    "stylelint-config-standard": "^36.0.0"
+  },
+  "scripts": {
+    "lint:html": "htmlhint \"**/*.html\"",
+    "lint:css": "stylelint \"**/*.css\" --allow-empty-input",
+    "lint": "npm run lint:html && npm run lint:css"
+  }
+}
