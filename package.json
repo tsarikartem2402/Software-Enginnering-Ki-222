@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "Static website for lab 2",
   "devDependencies": {
-    "htmlhint": "^1.1.4",
-    "stylelint": "^16.2.1",
-    "stylelint-config-standard": "^36.0.0"
+    "htmlhint": "^0.14.2",
+    "stylelint": "^15.0.0",
+    "stylelint-config-standard": "^30.0.0"
   },
   "scripts": {
     "lint:html": "htmlhint \"**/*.html\"",
