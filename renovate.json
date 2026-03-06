@@ -1,18 +1,40 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+
   "extends": [
     "config:recommended"
   ],
+
+  "labels": ["dependencies"],
+
+  "schedule": [
+    "every weekend"
+  ],
+
   "packageRules": [
     {
+      "description": "Automerge minor and patch updates",
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
-      "automerge": true
+      "automerge": true,
+      "automergeType": "pr"
+    },
+    {
+      "description": "Group all devDependencies updates",
+      "matchDepTypes": ["devDependencies"],
+      "groupName": "dev-dependencies"
     }
   ],
+
   "github-actions": {
     "enabled": true
   },
+
   "docker": {
     "enabled": true
-  }
+  },
+
+  "prHourlyLimit": 5,
+  "prConcurrentLimit": 10,
+
+  "dependencyDashboard": true
 }
