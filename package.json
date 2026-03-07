@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Static website for lab 2",
   "devDependencies": {
-    "htmlhint": "^0.16.0",
+    "htmlhint": "^1.0.0",
     "stylelint": "^17.0.0",
     "stylelint-config-standard": "^40.0.0"
   },
