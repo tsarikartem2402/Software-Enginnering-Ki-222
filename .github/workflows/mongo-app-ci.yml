@@ -1,0 +1,47 @@
+name: Mongo App CI & Performance
+
+on:
+  push:
+    paths:
+      - 'lab3/mongoapp/**'
+  pull_request:
+    paths:
+      - 'lab3/mongoapp/**'
+
+jobs:
+  mongo-app-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Start Services with Docker Compose
+        run: |
+          cd lab3/mongoapp
+          docker compose up -d
+          # Wait for mongo and app to be ready
+          sleep 15
+
+      - name: Run k6 Load Test
+        uses: grafana/k6-action@v0.3.1
+        with:
+          filename: lab3/mongoapp/k6/load_test.js
+
+      - name: Run k6 Stress Test
+        uses: grafana/k6-action@v0.3.1
+        with:
+          filename: lab3/mongoapp/k6/stress_test.js
+
+      - name: Run k6 CI Thresholds Test
+        uses: grafana/k6-action@v0.3.1
+        with:
+          filename: lab3/mongoapp/k6/ci_thresholds_test.js
+
+      - name: Cleanup
+        if: always()
+        run: |
+          cd lab3/mongoapp
+          docker compose down
