@@ -11,7 +11,8 @@ export const options = {
 };
 
 export default function () {
-  const url = 'http://localhost:3000/api/users';
+  const baseUrl = __ENV.BASE_URL || 'http://localhost:3000';
+  const url = `${baseUrl}/api/users`;
   const res = http.get(url);
   check(res, {
     'status is 200': (r) => r.status === 200,

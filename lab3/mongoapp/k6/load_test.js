@@ -7,7 +7,8 @@ export const options = {
 };
 
 export default function () {
-  const url = 'http://localhost:3000/api/users';
+  const baseUrl = __ENV.BASE_URL || 'http://localhost:3000';
+  const url = `${baseUrl}/api/users`;
   
   // 1. Get all users
   const getRes = http.get(url);

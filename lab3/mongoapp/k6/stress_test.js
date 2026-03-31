@@ -11,32 +11,36 @@ export const options = {
 };
 
 export default function () {
-  const url = 'http://localhost:3000/api/users';
+  const baseUrl = __ENV.BASE_URL || 'http://localhost:3000';
+  const url = `${baseUrl}/api/users`;
   const params = {
     headers: { 'Content-Type': 'application/json' },
   };
 
   // Create User
   const postRes = http.post(url, JSON.stringify({ name: 'StressUser', age: 30 }), params);
-  const user = postRes.json();
-  const userId = user._id;
-
+  
   check(postRes, {
-    'created user': (r) => r.status === 201,
+    'created user status is 201': (r) => r.status === 201,
   });
 
-  if (userId) {
-    // Get User
-    const getRes = http.get(`${url}/${userId}`);
-    check(getRes, {
-      'get user status is 200': (r) => r.status === 200,
-    });
+  if (postRes.status === 201) {
+    const user = postRes.json();
+    const userId = user._id;
 
-    // Delete User
-    const delRes = http.del(`${url}/${userId}`);
-    check(delRes, {
-      'delete user status is 200': (r) => r.status === 200,
-    });
+    if (userId) {
+      // Get User
+      const getRes = http.get(`${url}/${userId}`);
+      check(getRes, {
+        'get user status is 200': (r) => r.status === 200,
+      });
+
+      // Delete User
+      const delRes = http.del(`${url}/${userId}`);
+      check(delRes, {
+        'delete user status is 200': (r) => r.status === 200,
+      });
+    }
   }
 
   sleep(1);

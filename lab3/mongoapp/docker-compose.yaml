@@ -11,6 +11,7 @@ services:
       MONGO_DB: usersdb
     depends_on:
       - mongo
+    restart: always
 
   # 2. Сервіс MongoDB
   mongo:
@@ -19,6 +20,17 @@ services:
       - "27017:27017" 
     volumes:
       - mongo-data:/data/db
+    restart: always
+
+  # 3. Сервіс k6 для тестування
+  k6:
+    image: grafana/k6
+    volumes:
+      - ./k6:/scripts
+    environment:
+      - BASE_URL=http://app:3000
+    depends_on:
+      - app
 
 volumes:
   mongo-data:
