@@ -1,38 +1,45 @@
-name: Lab 3 Pipeline
+name: Lab 3 Dedicated Pipeline
 
 on:
   push:
     paths:
-      - 'lab3/mongoapp/**'
+      - 'lab3/**'
   pull_request:
     paths:
-      - 'lab3/mongoapp/**'
+      - 'lab3/**'
+  workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
+  # Replace with your repository name in lowercase for Docker
   IMAGE_NAME: ${{ github.repository }}-lab3
 
 jobs:
+  # 1. LINTING
   lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
           cache-dependency-path: lab3/mongoapp/package-lock.json
+
       - name: Install dependencies
         run: |
           cd lab3/mongoapp
           npm install
           npm install -g htmlhint
-      - name: Lint
+      
+      - name: Run Lint
         run: |
           cd lab3/mongoapp
           npm run lint
 
+  # 2. BUILD AND PUSH
   build-and-push:
     needs: lint
     runs-on: ubuntu-latest
@@ -41,14 +48,18 @@ jobs:
       packages: write
     steps:
       - uses: actions/checkout@v4
+
       - name: Log in to the Container registry
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Lowercase image name
-        run: echo "IMAGE_NAME_LOWER=$(echo ${{ env.IMAGE_NAME }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+        run: |
+          echo "IMAGE_NAME_LOWER=$(echo ${{ env.IMAGE_NAME }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
@@ -56,28 +67,27 @@ jobs:
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWER }}:latest
 
+  # 3. PERFORMANCE TESTS
   performance-tests:
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Start Services with Docker Compose
+
+      - name: Start Services
         run: |
           cd lab3/mongoapp
           docker compose up -d
-          sleep 20
-      - name: Run k6 Load Test
+          # Wait for services to be ready
+          sleep 30
+
+      - name: Run k6 Tests
         run: |
           cd lab3/mongoapp
           docker compose run --rm -e BASE_URL=http://app:3000 k6 run /scripts/load_test.js
-      - name: Run k6 Stress Test
-        run: |
-          cd lab3/mongoapp
           docker compose run --rm -e BASE_URL=http://app:3000 k6 run /scripts/stress_test.js
-      - name: Run k6 CI Thresholds Test
-        run: |
-          cd lab3/mongoapp
           docker compose run --rm -e BASE_URL=http://app:3000 k6 run /scripts/ci_thresholds_test.js
+
       - name: Cleanup
         if: always()
         run: |
