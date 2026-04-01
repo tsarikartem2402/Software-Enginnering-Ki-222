@@ -24,4 +24,37 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="5-insert-10-users" author="tsarik">
+        <insert tableName="lab4_test">
+            <column name="id" valueNumeric="101"/><column name="name" value="Ivan Mazepa"/>
+        </insert>
+        <insert tableName="lab4_test">
+            <column name="id" valueNumeric="102"/><column name="name" value="Bogdan Khmelnytsky"/>
+        </insert>
+        <insert tableName="lab4_test">
+            <column name="id" valueNumeric="103"/><column name="name" value="Taras Shevchenko"/>
+        </insert>
+        <insert tableName="lab4_test">
+            <column name="id" valueNumeric="104"/><column name="name" value="Lesya Ukrainka"/>
+        </insert>
+        <insert tableName="lab4_test">
+            <column name="id" valueNumeric="105"/><column name="name" value="Ivan Franko"/>
+        </insert>
+        <insert tableName="lab4_test">
+            <column name="id" valueNumeric="106"/><column name="name" value="Grigory Skovoroda"/>
+        </insert>
+        <insert tableName="lab4_test">
+            <column name="id" valueNumeric="107"/><column name="name" value="Yaroslav Mudry"/>
+        </insert>
+        <insert tableName="lab4_test">
+            <column name="id" valueNumeric="108"/><column name="name" value="Volodymyr Veliky"/>
+        </insert>
+        <insert tableName="lab4_test">
+            <column name="id" valueNumeric="109"/><column name="name" value="Danylo Galytsky"/>
+        </insert>
+        <insert tableName="lab4_test">
+            <column name="id" valueNumeric="110"/><column name="name" value="Pylyp Orlyk"/>
+        </insert>
+    </changeSet>
+
 </databaseChangeLog>
