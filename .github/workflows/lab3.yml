@@ -1,18 +1,17 @@
-name: Lab 3 Dedicated Pipeline
+name: Lab 4 Dedicated Pipeline (Combined Lab 3 & 4)
 
 on:
   push:
     paths:
-      - 'lab3/**'
+      - 'lab4/**'
   pull_request:
     paths:
-      - 'lab3/**'
+      - 'lab4/**'
   workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
- 
-  IMAGE_NAME: ${{ github.repository }}-lab3
+  IMAGE_NAME: ${{ github.repository }}-lab4
 
 jobs:
   # 1. LINTING
@@ -26,17 +25,17 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: lab3/mongoapp/package-lock.json
+          cache-dependency-path: lab4/package-lock.json
 
       - name: Install dependencies
         run: |
-          cd lab3/mongoapp
+          cd lab4
           npm install
           npm install -g htmlhint
       
       - name: Run Lint
         run: |
-          cd lab3/mongoapp
+          cd lab4
           npm run lint
 
   # 2. BUILD AND PUSH
@@ -63,7 +62,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: ./lab3/mongoapp
+          context: ./lab4
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWER }}:latest
 
@@ -76,14 +75,14 @@ jobs:
 
       - name: Start Services
         run: |
-          cd lab3/mongoapp
+          cd lab4
           docker compose up -d
           # Wait for services to be ready
           sleep 30
 
       - name: Run k6 Tests
         run: |
-          cd lab3/mongoapp
+          cd lab4
           docker compose run --rm -e BASE_URL=http://app:3000 k6 run /scripts/load_test.js
           docker compose run --rm -e BASE_URL=http://app:3000 k6 run /scripts/stress_test.js
           docker compose run --rm -e BASE_URL=http://app:3000 k6 run /scripts/ci_thresholds_test.js
@@ -91,5 +90,5 @@ jobs:
       - name: Cleanup
         if: always()
         run: |
-          cd lab3/mongoapp
+          cd lab4
           docker compose down
