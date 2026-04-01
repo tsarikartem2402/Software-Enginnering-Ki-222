@@ -1,22 +1,19 @@
 # Software-Engineering-KI-222
 Tsarik Artem
 
-## Об'єднаний проект (Lab 3 + Lab 4)
-Весь проект знаходиться в папці lab4/.
+## Лабораторна робота №3 + №4 (Об'єднаний проект)
 
 ### Склад проекту:
-- Node.js + MongoDB: Основний додаток (з Лаб 3).
-- Liquibase: Система керування версіями бази даних (з Лаб 4).
-- Docker: Контейнеризація всього стеку.
-- k6: Тести навантаження.
+- **Node.js + MongoDB**: Основний додаток.
+- **Liquibase**: Керування версіями БД (налаштовано для MongoDB).
+- **Docker**: Контейнеризація (Dockerfile, docker-compose.yaml).
+- **k6**: Тести навантаження (папка k6/).
 
 ### Як працювати з проектом:
-1. Перейдіть до папки проекту:
-   cd lab4/
-2. Для роботи з Liquibase:
+1. Для роботи з Liquibase:
    - liquibase status - перевірка стану.
-   - liquibase update - застосування змін до БД.
-   - liquibase rollback --tag=version1 - відкат змін до версії 1.
+   - liquibase update - завантаження 10 користувачів у MongoDB.
+   - liquibase rollback --tag=version1 - відкат змін.
 
-3. Для запуску додатку в Docker:
-   docker-compose up --build
+2. Для запуску додатку в Docker:
+   - docker-compose up --build
