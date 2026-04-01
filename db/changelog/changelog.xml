@@ -8,34 +8,21 @@
         http://www.liquibase.org/xml/ns/mongodb
         http://www.liquibase.org/xml/ns/mongodb/liquibase-mongodb-latest.xsd">
 
-    <!-- 1. Створення колекції -->
-    <changeSet id="1-create-users-collection" author="tsarik">
-        <mongodb:createCollection collectionName="lab4_users"/>
-    </changeSet>
-
-    <!-- 2. Створення індексу з ОБОВ'ЯЗКОВИМ вказанням імені -->
-    <changeSet id="2-create-index-v2" author="tsarik">
-        <mongodb:createIndex collectionName="lab4_users">
-            <mongodb:keys>{"user_id": 1}</mongodb:keys>
-            <mongodb:options>{"unique": true, "name": "idx_user_id_fixed"}</mongodb:options>
-        </mongodb:createIndex>
-    </changeSet>
-
-    <!-- 3. Вставка 10 користувачів -->
-    <changeSet id="3-insert-10-users-mongo" author="tsarik">
-        <mongodb:insertMany collectionName="lab4_users">
+    <!-- Додаємо 10 користувачів безпосередньо в існуючу колекцію users -->
+    <changeSet id="insert-10-users-final" author="tsarik">
+        <mongodb:insertMany collectionName="users">
             <mongodb:documents>
                 [
-                  { "user_id": 101, "name": "Ivan Mazepa", "lab": 4 },
-                  { "user_id": 102, "name": "Bogdan Khmelnytsky", "lab": 4 },
-                  { "user_id": 103, "name": "Taras Shevchenko", "lab": 4 },
-                  { "user_id": 104, "name": "Lesya Ukrainka", "lab": 4 },
-                  { "user_id": 105, "name": "Ivan Franko", "lab": 4 },
-                  { "user_id": 106, "name": "Grigory Skovoroda", "lab": 4 },
-                  { "user_id": 107, "name": "Yaroslav Mudry", "lab": 4 },
-                  { "user_id": 108, "name": "Volodymyr Veliky", "lab": 4 },
-                  { "user_id": 109, "name": "Danylo Galytsky", "lab": 4 },
-                  { "user_id": 110, "name": "Pylyp Orlyk", "lab": 4 }
+                  { "name": "Ivan Mazepa", "age": 25, "__v": 0 },
+                  { "name": "Bogdan Khmelnytsky", "age": 30, "__v": 0 },
+                  { "name": "Taras Shevchenko", "age": 28, "__v": 0 },
+                  { "name": "Lesya Ukrainka", "age": 22, "__v": 0 },
+                  { "name": "Ivan Franko", "age": 35, "__v": 0 },
+                  { "name": "Grigory Skovoroda", "age": 40, "__v": 0 },
+                  { "name": "Yaroslav Mudry", "age": 45, "__v": 0 },
+                  { "name": "Volodymyr Veliky", "age": 50, "__v": 0 },
+                  { "name": "Danylo Galytsky", "age": 33, "__v": 0 },
+                  { "name": "Pylyp Orlyk", "age": 27, "__v": 0 }
                 ]
             </mongodb:documents>
         </mongodb:insertMany>
