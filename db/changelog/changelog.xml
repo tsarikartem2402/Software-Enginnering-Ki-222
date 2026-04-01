@@ -8,20 +8,20 @@
         http://www.liquibase.org/xml/ns/mongodb
         http://www.liquibase.org/xml/ns/mongodb/liquibase-mongodb-latest.xsd">
 
-    <!-- 1. Створення колекції (аналог таблиці) -->
+    <!-- 1. Створення колекції -->
     <changeSet id="1-create-users-collection" author="tsarik">
         <mongodb:createCollection collectionName="lab4_users"/>
     </changeSet>
 
-    <!-- 2. Створення індексу (аналог Primary Key/Index) -->
-    <changeSet id="2-create-index" author="tsarik">
+    <!-- 2. Створення індексу з ОБОВ'ЯЗКОВИМ вказанням імені -->
+    <changeSet id="2-create-index-v2" author="tsarik">
         <mongodb:createIndex collectionName="lab4_users">
             <mongodb:keys>{"user_id": 1}</mongodb:keys>
-            <mongodb:options>{"unique": true, "name": "idx_user_id"}</mongodb:options>
+            <mongodb:options>{"unique": true, "name": "idx_user_id_fixed"}</mongodb:options>
         </mongodb:createIndex>
     </changeSet>
 
-    <!-- 3. Вставка 10 користувачів (NoSQL формат JSON) -->
+    <!-- 3. Вставка 10 користувачів -->
     <changeSet id="3-insert-10-users-mongo" author="tsarik">
         <mongodb:insertMany collectionName="lab4_users">
             <mongodb:documents>
