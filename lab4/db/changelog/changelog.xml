@@ -2,59 +2,43 @@
 <databaseChangeLog
     xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:mongodb="http://www.liquibase.org/xml/ns/mongodb"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/mongodb
+        http://www.liquibase.org/xml/ns/mongodb/liquibase-mongodb-latest.xsd">
 
-    <changeSet id="1" author="my-student">
-        <createTable tableName="lab4_test">
-            <column name="id" type="int">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="name" type="varchar(50)"/>
-        </createTable>
+    <!-- 1. Створення колекції (аналог таблиці) -->
+    <changeSet id="1-create-users-collection" author="tsarik">
+        <mongodb:createCollection collectionName="lab4_users"/>
     </changeSet>
 
-    <changeSet id="2-tag" author="my-student">
-        <tagDatabase tag="version1"/>
+    <!-- 2. Створення індексу (аналог Primary Key/Index) -->
+    <changeSet id="2-create-index" author="tsarik">
+        <mongodb:createIndex collectionName="lab4_users">
+            <mongodb:keys>{user_id: 1}</mongodb:keys>
+            <mongodb:options>{unique: true}</mongodb:options>
+        </mongodb:createIndex>
     </changeSet>
 
-    <changeSet id="3-add-column" author="my-student">
-        <addColumn tableName="lab4_test">
-            <column name="description" type="varchar(255)"/>
-        </addColumn>
-    </changeSet>
-
-    <changeSet id="5-insert-10-users" author="tsarik">
-        <insert tableName="lab4_test">
-            <column name="id" valueNumeric="101"/><column name="name" value="Ivan Mazepa"/>
-        </insert>
-        <insert tableName="lab4_test">
-            <column name="id" valueNumeric="102"/><column name="name" value="Bogdan Khmelnytsky"/>
-        </insert>
-        <insert tableName="lab4_test">
-            <column name="id" valueNumeric="103"/><column name="name" value="Taras Shevchenko"/>
-        </insert>
-        <insert tableName="lab4_test">
-            <column name="id" valueNumeric="104"/><column name="name" value="Lesya Ukrainka"/>
-        </insert>
-        <insert tableName="lab4_test">
-            <column name="id" valueNumeric="105"/><column name="name" value="Ivan Franko"/>
-        </insert>
-        <insert tableName="lab4_test">
-            <column name="id" valueNumeric="106"/><column name="name" value="Grigory Skovoroda"/>
-        </insert>
-        <insert tableName="lab4_test">
-            <column name="id" valueNumeric="107"/><column name="name" value="Yaroslav Mudry"/>
-        </insert>
-        <insert tableName="lab4_test">
-            <column name="id" valueNumeric="108"/><column name="name" value="Volodymyr Veliky"/>
-        </insert>
-        <insert tableName="lab4_test">
-            <column name="id" valueNumeric="109"/><column name="name" value="Danylo Galytsky"/>
-        </insert>
-        <insert tableName="lab4_test">
-            <column name="id" valueNumeric="110"/><column name="name" value="Pylyp Orlyk"/>
-        </insert>
+    <!-- 3. Вставка 10 користувачів (NoSQL формат JSON) -->
+    <changeSet id="3-insert-10-users-mongo" author="tsarik">
+        <mongodb:insertMany collectionName="lab4_users">
+            <mongodb:documents>
+                [
+                  { "user_id": 101, "name": "Ivan Mazepa", "lab": 4 },
+                  { "user_id": 102, "name": "Bogdan Khmelnytsky", "lab": 4 },
+                  { "user_id": 103, "name": "Taras Shevchenko", "lab": 4 },
+                  { "user_id": 104, "name": "Lesya Ukrainka", "lab": 4 },
+                  { "user_id": 105, "name": "Ivan Franko", "lab": 4 },
+                  { "user_id": 106, "name": "Grigory Skovoroda", "lab": 4 },
+                  { "user_id": 107, "name": "Yaroslav Mudry", "lab": 4 },
+                  { "user_id": 108, "name": "Volodymyr Veliky", "lab": 4 },
+                  { "user_id": 109, "name": "Danylo Galytsky", "lab": 4 },
+                  { "user_id": 110, "name": "Pylyp Orlyk", "lab": 4 }
+                ]
+            </mongodb:documents>
+        </mongodb:insertMany>
     </changeSet>
 
 </databaseChangeLog>
