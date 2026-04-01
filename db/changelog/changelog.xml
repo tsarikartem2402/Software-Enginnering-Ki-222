@@ -16,8 +16,8 @@
     <!-- 2. Створення індексу (аналог Primary Key/Index) -->
     <changeSet id="2-create-index" author="tsarik">
         <mongodb:createIndex collectionName="lab4_users">
-            <mongodb:keys>{user_id: 1}</mongodb:keys>
-            <mongodb:options>{unique: true}</mongodb:options>
+            <mongodb:keys>{"user_id": 1}</mongodb:keys>
+            <mongodb:options>{"unique": true, "name": "idx_user_id"}</mongodb:options>
         </mongodb:createIndex>
     </changeSet>
 
