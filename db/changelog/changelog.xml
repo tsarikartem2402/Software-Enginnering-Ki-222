@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:mongodb="http://www.liquibase.org/xml/ns/mongodb"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/mongodb
+        http://www.liquibase.org/xml/ns/mongodb/liquibase-mongodb-latest.xsd">
+
+    <!-- 1. Створення колекції users -->
+    <changeSet id="1-create-users-collection" author="tsarik">
+        <mongodb:createCollection collectionName="users"/>
+        <rollback>
+            <mongodb:dropCollection collectionName="users"/>
+        </rollback>
+    </changeSet>
+
+    <!-- 2. Створення унікального індексу -->
+    <changeSet id="2-create-users-index" author="tsarik">
+        <mongodb:createIndex collectionName="users">
+            <mongodb:keys>{ "name": 1 }</mongodb:keys>
+            <mongodb:options>{ "name": "idx_users_name", "unique": true }</mongodb:options>
+        </mongodb:createIndex>
+        <rollback>
+            <mongodb:dropIndex collectionName="users">
+                <mongodb:keys>{ "name": 1 }</mongodb:keys>
+            </mongodb:dropIndex>
+        </rollback>
+    </changeSet>
+
+    <!-- 3. Вставка 10 тестових користувачів -->
+    <changeSet id="3-insert-10-users" author="tsarik">
+        <mongodb:insertMany collectionName="users">
+            <mongodb:documents>
+                [
+                  { "name": "Ivan Mazepa", "age": 25 },
+                  { "name": "Bogdan Khmelnytsky", "age": 30 },
+                  { "name": "Taras Shevchenko", "age": 28 },
+                  { "name": "Lesya Ukrainka", "age": 22 },
+                  { "name": "Ivan Franko", "age": 35 },
+                  { "name": "Grigory Skovoroda", "age": 40 },
+                  { "name": "Yaroslav Mudry", "age": 45 },
+                  { "name": "Volodymyr Veliky", "age": 50 },
+                  { "name": "Danylo Galytsky", "age": 33 },
+                  { "name": "Pylyp Orlyk", "age": 27 }
+                ]
+            </mongodb:documents>
+        </mongodb:insertMany>
+
+        <!-- Rollback через runCommand -->
+        <rollback>
+            <mongodb:runCommand>
+                <mongodb:command>
+                    <![CDATA[
+                    {
+                      "delete": "users",
+                      "deletes": [
+                        {
+                          "q": {
+                            "name": {
+                              "$in": [
+                                "Ivan Mazepa",
+                                "Bogdan Khmelnytsky",
+                                "Taras Shevchenko",
+                                "Lesya Ukrainka",
+                                "Ivan Franko",
+                                "Grigory Skovoroda",
+                                "Yaroslav Mudry",
+                                "Volodymyr Veliky",
+                                "Danylo Galytsky",
+                                "Pylyp Orlyk"
+                              ]
+                            }
+                          },
+                          "limit": 0
+                        }
+                      ]
+                    }
+                    ]]>
+                </mongodb:command>
+            </mongodb:runCommand>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
