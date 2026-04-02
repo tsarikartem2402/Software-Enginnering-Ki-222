@@ -8,37 +8,79 @@
         http://www.liquibase.org/xml/ns/mongodb
         http://www.liquibase.org/xml/ns/mongodb/liquibase-mongodb-latest.xsd">
 
-    <!-- 1. Створення колекції (аналог таблиці) -->
+    <!-- 1. Створення колекції users -->
     <changeSet id="1-create-users-collection" author="tsarik">
-        <mongodb:createCollection collectionName="lab4_users"/>
+        <mongodb:createCollection collectionName="users"/>
+        <rollback>
+            <mongodb:dropCollection collectionName="users"/>
+        </rollback>
     </changeSet>
 
-    <!-- 2. Створення індексу (аналог Primary Key/Index) -->
-    <changeSet id="2-create-index" author="tsarik">
-        <mongodb:createIndex collectionName="lab4_users">
-            <mongodb:keys>{user_id: 1}</mongodb:keys>
-            <mongodb:options>{unique: true}</mongodb:options>
+    <!-- 2. Створення унікального індексу -->
+    <changeSet id="2-create-users-index" author="tsarik">
+        <mongodb:createIndex collectionName="users">
+            <mongodb:keys>{ "name": 1 }</mongodb:keys>
+            <mongodb:options>{ "name": "idx_users_name", "unique": true }</mongodb:options>
         </mongodb:createIndex>
+        <rollback>
+            <mongodb:dropIndex collectionName="users">
+                <mongodb:keys>{ "name": 1 }</mongodb:keys>
+            </mongodb:dropIndex>
+        </rollback>
     </changeSet>
 
-    <!-- 3. Вставка 10 користувачів (NoSQL формат JSON) -->
-    <changeSet id="3-insert-10-users-mongo" author="tsarik">
+    <!-- 3. Вставка 10 тестових користувачів -->
+    <changeSet id="3-insert-10-users" author="tsarik">
         <mongodb:insertMany collectionName="users">
             <mongodb:documents>
                 [
-                  { "user_id": 101, "name": "Ivan Mazepa", "lab": 4 },
-                  { "user_id": 102, "name": "Bogdan Khmelnytsky", "lab": 4 },
-                  { "user_id": 103, "name": "Taras Shevchenko", "lab": 4 },
-                  { "user_id": 104, "name": "Lesya Ukrainka", "lab": 4 },
-                  { "user_id": 105, "name": "Ivan Franko", "lab": 4 },
-                  { "user_id": 106, "name": "Grigory Skovoroda", "lab": 4 },
-                  { "user_id": 107, "name": "Yaroslav Mudry", "lab": 4 },
-                  { "user_id": 108, "name": "Volodymyr Veliky", "lab": 4 },
-                  { "user_id": 109, "name": "Danylo Galytsky", "lab": 4 },
-                  { "user_id": 110, "name": "Pylyp Orlyk", "lab": 4 }
+                  { "name": "Ivan Mazepa", "age": 25 },
+                  { "name": "Bogdan Khmelnytsky", "age": 30 },
+                  { "name": "Taras Shevchenko", "age": 28 },
+                  { "name": "Lesya Ukrainka", "age": 22 },
+                  { "name": "Ivan Franko", "age": 35 },
+                  { "name": "Grigory Skovoroda", "age": 40 },
+                  { "name": "Yaroslav Mudry", "age": 45 },
+                  { "name": "Volodymyr Veliky", "age": 50 },
+                  { "name": "Danylo Galytsky", "age": 33 },
+                  { "name": "Pylyp Orlyk", "age": 27 }
                 ]
             </mongodb:documents>
         </mongodb:insertMany>
+
+        <!-- Rollback через runCommand -->
+        <rollback>
+            <mongodb:runCommand>
+                <mongodb:command>
+                    <![CDATA[
+                    {
+                      "delete": "users",
+                      "deletes": [
+                        {
+                          "q": {
+                            "name": {
+                              "$in": [
+                                "Ivan Mazepa",
+                                "Bogdan Khmelnytsky",
+                                "Taras Shevchenko",
+                                "Lesya Ukrainka",
+                                "Ivan Franko",
+                                "Grigory Skovoroda",
+                                "Yaroslav Mudry",
+                                "Volodymyr Veliky",
+                                "Danylo Galytsky",
+                                "Pylyp Orlyk"
+                              ]
+                            }
+                          },
+                          "limit": 0
+                        }
+                      ]
+                    }
+                    ]]>
+                </mongodb:command>
+            </mongodb:runCommand>
+        </rollback>
     </changeSet>
 
 </databaseChangeLog>
