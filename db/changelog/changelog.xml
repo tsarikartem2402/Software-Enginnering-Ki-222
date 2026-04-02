@@ -23,7 +23,7 @@
 
     <!-- 3. Вставка 10 користувачів (NoSQL формат JSON) -->
     <changeSet id="3-insert-10-users-mongo" author="tsarik">
-        <mongodb:insertMany collectionName="lab4_users">
+        <mongodb:insertMany collectionName="users">
             <mongodb:documents>
                 [
                   { "user_id": 101, "name": "Ivan Mazepa", "lab": 4 },
